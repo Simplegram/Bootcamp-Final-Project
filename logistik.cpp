@@ -4,7 +4,6 @@
 #include <time.h>
 #include <windows.h>
 
-
 struct pelanggan{
     char nama [255]; // nama pelanggan
     char destinasi[255]; // lokasi tujuan
@@ -18,10 +17,12 @@ struct barang {
     double berat; // berat barang
     char kirim; // pemilihan cara mengirim barang
 };
+
 struct penerima{
     char nama[255];
     long long int telp[100];
 };
+
 //menunjuk ke suatu posisi x dan y di console
 void gotoxy(int x, int y){
     COORD P;
@@ -34,7 +35,6 @@ void gotoxy(int x, int y){
 void dataPelanggan(){
 
     struct pelanggan plg;
-    printf("wait....\n");
     Sleep(500);
 
     printf("Masukkan nama Anda: ");
@@ -50,6 +50,7 @@ void dataPelanggan(){
 
         printf("wait....\n");
         Sleep(500);
+        printf("\n");
 
         printf("%s telah ditambahkan dengan nomor telepon %s\n", plg.nama, plg.nomer);
         printf("Destinasi yang dituju: %s\n", plg.destinasi);
@@ -78,7 +79,13 @@ void profil(){
         printf("Nomor: %s\n", plg.nomer);
         printf("\n");
     }
-
+    
+    char udah = 'B';
+    printf("(U)dahan\n");
+    printf("Input: ");
+    do{
+        scanf("%c", &udah);
+    } while (udah != 'U');
 }
 
 //menginput nama barang, jumlah barang, dan berat barang, lalu dimasukkan ke database (barang.txt)
@@ -86,8 +93,11 @@ void dataBarang(){
     printf("wait....\n");
     Sleep(500);
 
+    system("CLS");
+
     struct barang brg;
     printf("Ongkir = Rp.10.000/kg\n");
+    printf("\n");
 
     printf("Masukkan Jenis Barang: ");
     scanf("%s", &brg.barang);
@@ -98,10 +108,13 @@ void dataBarang(){
     printf("Panjang Barang (dalam m): ");
     scanf("%f", &brg.panjang);
 
+    system("CLS");
+
+    printf("Pilih jangka waktu pengiriman (Ketik huruf lain untuk pengiriman normal)\n");
     printf("[S]uper cepat (1 hari) + Rp.20000\n");
     printf("[C]epat (2-4 hari) + Rp.10000\n");
     printf("[D]ah santai aja (14 hari) lebih hemat Rp.5000\n");
-    printf("Pilihlah jangka waktu pengiriman (Ketik huruf selain s,c,d jika ingin pengiriman biasa)\n"); 
+    printf("Input: ");
     scanf("%s", &brg.kirim); // pemilihan kecepatan pengiriman
     
     printf("wait....\n");
@@ -123,29 +136,38 @@ void dataBarang(){
        harga = brg.berat * 10000;
     }
 
+    system("CLS");
+
     // harga total
     (brg.n <= 5) ? printf("Harga total: Rp. %d\n", harga + brg.n * 5000) : printf("Harga total: Rp. %d\n", harga + brg.n * 7000 ); 
 
-        srand(time(NULL)); // generate random number
-        printf("Nomer pesanan anda: %d\n", rand()*2021); // to give 8 digits number
-        printf("Jangan sampai lupa!\n");
+    srand(time(NULL)); // generate random number
+    printf("Nomer pesanan anda: %d\n", rand()*2021); // to give 8 digits number
+    printf("Jangan sampai lupa!\n");
 
-        FILE *fileplg = fopen("./barang.txt", "a"); // menyimpan data disebuah file txt
-        fprintf(fileplg, "%s$%d$%.3lf$%f\n", brg.barang, brg.n, brg.berat, brg.panjang);
-        fclose(fileplg);
+    FILE *fileplg = fopen("./barang.txt", "a"); // menyimpan data disebuah file txt
+    fprintf(fileplg, "%s$%d$%.3lf$%f\n", brg.barang, brg.n, brg.berat, brg.panjang);
+    fclose(fileplg);
 
+    printf("\n");
+    char udah = 'B';
+    printf("(U)dahan\n");
+    printf("Input: ");
+    do{
+        scanf("%c", &udah);
+    } while (udah != 'U');
 }
 
 // untuk melihat data barang
-
 void lihatbarang(){
 
     printf("wait....\n");
     Sleep(500);
+    system("CLS");
 
     FILE *fileplg = fopen("./barang.txt", "r");
     struct barang brg;
-    
+
     while(fscanf(fileplg, "%[^$]$%d$%lf$%f\n", brg.barang, &brg.n, &brg.berat, &brg.panjang) != EOF){
         printf("Jenis barang: %s\n", brg.barang);
         printf("Jumlah barang: %d\n", brg.n);
@@ -154,12 +176,22 @@ void lihatbarang(){
         printf("\n");
     }
 
+    char udah = 'B';
+    printf("(U)dahan\n");
+    printf("Input: ");
+    do{
+        scanf("%c", &udah);
+    } while (udah != 'U');
 }
+
 // untuk mencari barang kita
 struct barang caribarang(){
+    HANDLE hand = GetStdHandle(STD_OUTPUT_HANDLE);
 
     printf("wait....\n");
     Sleep(500);
+
+    system("CLS");
 
     char name[100];
     printf("Masukkan nama barang yang Anda cari: ");
@@ -171,19 +203,43 @@ struct barang caribarang(){
         if (strcmp(name, brg.barang) == 0){
             printf("wait....\n");
             Sleep(500);
+            system("CLS");
+            SetConsoleTextAttribute(hand, 11);
+            printf("%s ditemukan\n", brg.barang);
+            SetConsoleTextAttribute(hand, 2);
+
+            int waktu = 3;
+            printf("\n");
+            printf("Exitting in ");
+            while(waktu--){
+                gotoxy(6, 2);
+                printf("%d", waktu);
+                Sleep(1000);
+            }
+
             return brg;
         } 
     }    
-        printf("wait....\n");
-        Sleep(500);
+    printf("wait....\n");
+    Sleep(500);
+    system("CLS");
 
-        printf("Barang tidak");
+    SetConsoleTextAttribute(hand, 12);
+    printf("Barang tidak ditemukan\n");
+    SetConsoleTextAttribute(hand, 2);
 
-        struct barang temp;
-        return temp;
+    printf("\n");
+    char udah = 'B';
+    printf("(U)dahan\n");
+    printf("Input: ");
+    do{
+        scanf("%c", &udah);
+    } while (udah != 'U');
 
-
+    struct barang temp;
+    return temp;
 }
+
 // untuk memasukkan data penerima
 void penerima(){
 
@@ -204,6 +260,7 @@ void penerima(){
     Sleep(500);
 
 }
+
 // untuk melihat data penerima
 void lihatpenerima(){
 
@@ -219,11 +276,21 @@ void lihatpenerima(){
         printf("\n");
     }
 
+    printf("\n");
+    char udah = 'B';
+    printf("(U)dahan\n");
+    printf("Input: ");
+    do{
+        scanf("%c", &udah);
+    } while (udah != 'U');
+
 }
+
 int main(){
 
     // judul
     HANDLE hand = GetStdHandle(STD_OUTPUT_HANDLE);
+    system("CLS");
     gotoxy(0, 2);
 
     SetConsoleTextAttribute(hand, 14);
@@ -237,81 +304,93 @@ int main(){
     gotoxy(0, 6);
     printf("CCCC   OOOO   BBB    OOOO   X  X");
     printf("\n");
-    
+    Sleep(1000);
+    system("CLS");
+
     // warna dan pembukaan
     SetConsoleTextAttribute(hand, 2);
-    gotoxy(20, 8);
-    puts("Selamat Datang di Aplikasi Kami");
-    gotoxy(0, 10);
-    puts("Silakan memilih salah satu menu dibawah (ditulis dalam huruf kapital)");
 
-  char menu; // halaman utama
+    char menu; // halaman utama
     do{
-
+        system("CLS");
+        puts("Silakan memilih salah satu menu dibawah (ditulis dalam huruf kapital)");
         puts("(M)enu Utama");
         puts("(P)rofil");
         puts("(B)arang Kamu");
         puts("(U)dahan");
-        printf("Pilihlah menu yang anda inginkan\n");
+        printf("\n");
+        printf("Input: ");
         scanf("%s", &menu);
+        printf("\n");
+        system("CLS");
 
         switch(menu){
             case 'M':{
                 char choice;
-                printf("wait....\n");
                 Sleep(500);
 
                 do{
+                    system("CLS");
+                    printf("Pilihlah menu yang anda inginkan\n");
                     puts("(D)ata Pelanggan");
                     puts("(A)dd Barang");
                     puts("(I)nfo Barang");
                     puts("(U)dahan");
-                    printf("Pilihlah menu yang anda inginkan\n");
+                    printf("\n");
+                    printf("Input: ");
                     scanf("%s", &choice);
+                    system("CLS");
                     switch(choice){
                         case 'D':{
-                            printf("wait....\n");
                             Sleep(500);
                             char person;
                             do{
+                                system("CLS");
+                                printf("Pilihlah menu yang anda inginkan\n");
                                 puts("(N)girim");
                                 puts("(P)enerima");
                                 puts("(U)dahan");
-                                printf("Pilihlah menu yang anda inginkan\n");
+                                printf("\n");
+                                printf("Input: ");
                                 scanf("%s", &person);
-                            switch(person){
-                                case 'N':{
-                                    dataPelanggan();
-                                    break;
-                                } 
-                                case 'P':{
-                                    penerima();
-                                    break;
-                                }   
-                                case 'U':{
-                                    printf("wait....\n");
-                                    Sleep(500);
-                                }
-                                default:{
-                                    puts("You are in direct violation of Code 12, please refer to the violation code textbook.");
-                                    break;
-                                }  
-                                
-                            }
-                            
-                        }while (person != 'U'); 
+                                system("CLS");
 
-                        break; // case break in D
-                    } 
+                                switch(person){
+                                    case 'N':{
+                                        dataPelanggan();
+                                        break;
+                                    } 
+                                    case 'P':{
+                                        penerima();
+                                        break;
+                                    }   
+                                    case 'U':{
+                                        printf("Wait......\n");
+                                        Sleep(500);
+                                        break;
+                                    }
+                                    default:{
+                                        puts("You are in direct violation of Code 12, please refer to the violation code textbook.");
+                                        break;
+                                    }  
+                                
+                                }
+                            
+                            } while (person != 'U'); 
+                            
+                            break; // case break in D
+                        } 
                 
                         case 'A':{
                             dataBarang();
                             break;
                         }
+
                         case 'I':{
-                        lihatbarang();
+                            lihatbarang();
                             break;
                         }
+
                         case 'U':{
                             printf("Wait......\n");
                             Sleep(500);
@@ -328,14 +407,18 @@ int main(){
             }
             case 'P':{
                 char profil1;
-                printf("wait....\n");
                 Sleep(500);
                 do{
+                    system("CLS");
+                    printf("Pilihlah menu yang anda inginkan\n");
                     puts("(N)girim");
                     puts("(P)enerima");
                     puts("(U)dahan");
-                    printf("Pilihlah menu yang anda inginkan\n");
+                    printf("\n");
+                    printf("Input: ");
                     scanf("%s", &profil1);
+                    printf("\n");
+                    system("CLS");
 
                 switch(profil1){
                     case 'N':{
@@ -358,12 +441,14 @@ int main(){
             }
             case 'B':{
                 struct barang temp = caribarang();
-                printf("%s ditemukan\n", temp.barang);
+                // struct barang temp = caribarang();
+                // printf("%s ditemukan\n", temp.barang);
                 break;
             }
             case 'U':{
                 printf("Exiting.....");
                 Sleep(1000);
+                system("CLS");
                 break;
             }
             default:{
@@ -378,4 +463,3 @@ int main(){
 
     return 0;
 }
-
